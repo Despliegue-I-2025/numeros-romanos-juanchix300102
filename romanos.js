@@ -1,10 +1,12 @@
 ﻿const express = require('express');
 const cors = require('cors');
-const app = express();
-app.use(cors());
-const PORT = process.env.PORT || 3000;
 
-// Romanos a Arabigos
+const app = express();
+
+// Habilitar CORS
+app.use(cors());
+
+// Romanos a Arábigos
 app.get('/r2a', (req, res) => {
   const romanNumeral = req.query.roman;
   if (!romanNumeral) {
@@ -19,7 +21,7 @@ app.get('/r2a', (req, res) => {
   return res.json({ arabic: arabicNumber });
 });
 
-// Arabigos a Romanos
+// Arábigos a Romanos
 app.get('/a2r', (req, res) => {
   const arabicNumber = parseInt(req.query.arabic, 10);
   if (isNaN(arabicNumber)) {
@@ -37,10 +39,8 @@ app.get('/a2r', (req, res) => {
 function romanToArabic(roman) {
   if (!roman || typeof roman !== 'string') return null;
 
-  // Normalizamos
   roman = roman.toUpperCase().trim();
 
-  // Validamos que sea un número romano estándar entre 1 y 3999
   const validRomanRegex =
     /^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/;
   if (!validRomanRegex.test(roman)) {
@@ -64,9 +64,8 @@ function romanToArabic(roman) {
     const next = values[roman[i + 1]];
 
     if (next && next > curr) {
-      // Caso sustractivo (IV, IX, XL, etc.)
       total += next - curr;
-      i++; // Saltamos el siguiente porque ya lo usamos
+      i++;
     } else {
       total += curr;
     }
@@ -76,7 +75,6 @@ function romanToArabic(roman) {
 }
 
 function arabicToRoman(arabic) {
-  // Solo aceptamos enteros entre 1 y 3999
   if (!Number.isInteger(arabic) || arabic < 1 || arabic > 3999) {
     return null;
   }
@@ -111,8 +109,12 @@ function arabicToRoman(arabic) {
 }
 
 
+
+// Export para Vercel (handler por defecto)
 module.exports = app;
 
+// Export extra para tests (propiedades del handler)
+module.exports.romanToArabic = romanToArabic;
+module.exports.arabicToRoman = arabicToRoman;
 
-module.exports = { app, romanToArabic, arabicToRoman };
 
