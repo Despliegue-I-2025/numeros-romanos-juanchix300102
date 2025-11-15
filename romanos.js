@@ -1,5 +1,7 @@
 ﻿const express = require('express');
+const cors = require('cors');
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 // Romanos a Arabigos
@@ -108,11 +110,9 @@ function arabicToRoman(arabic) {
   return resultado;
 }
 
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Servidor de tateti escuchando en el puerto ${PORT}`);
-  });
-}
+
+module.exports = app;
+
 
 module.exports = { app, romanToArabic, arabicToRoman };
 
