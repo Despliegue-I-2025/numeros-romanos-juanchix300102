@@ -21,12 +21,23 @@ app.get('/r2a', (req, res) => {
   return res.json({ arabic: arabicNumber });
 });
 
+
 // Arábigos a Romanos
 app.get('/a2r', (req, res) => {
-  const arabicNumber = parseInt(req.query.arabic, 10);
-  if (isNaN(arabicNumber)) {
+  const arabic = req.query.arabic;
+
+  // 1) Validar que el parámetro exista
+  if (!arabic) {
     return res.status(400).json({ error: 'Parametro arabic requerido.' });
   }
+
+  // 2) Validar que sea SOLO dígitos (nada de letras ni símbolos)
+  if (!/^\d+$/.test(arabic)) {
+    return res.status(400).json({ error: 'Numero arabico invalido.' });
+  }
+
+  // 3) Convertir a número entero
+  const arabicNumber = Number(arabic);
 
   const romanNumeral = arabicToRoman(arabicNumber);
   if (romanNumeral === null) {
